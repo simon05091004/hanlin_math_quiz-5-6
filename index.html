@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>六下數學診斷測驗｜翰林版第五、六單元</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --u5:#d04a1a;--u5l:#fdf0eb;--u5m:#f5c4a8;
+  --u6:#1a6bc8;--u6l:#ebf2fd;--u6m:#a8c8f5;
+  --green:#178a56;--greenl:#e7f6ef;
+  --red:#c82828;--redl:#fdeaea;
+  --amber:#b87010;--amberl:#fdf3e0;
+  --gray:#4e5a6a;--grayl:#f4f6f9;--graym:#dde2ea;
+  --text:#1a2130;--texts:#4e5a6a;--texth:#8a96a6;
+  --white:#fff;
+  --r:16px;--rs:10px;--rx:22px;
+  --sh:0 3px 16px rgba(0,0,0,0.09);
+}
+html,body{height:100%;font-family:'Noto Sans TC',sans-serif;background:#edf1f8;color:var(--text);font-size:16px;line-height:1.65;overflow-x:hidden}
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.active{display:flex}
+
+/* ─── TOP BAR ─── */
+.bar{display:flex;align-items:center;gap:12px;padding:13px 18px;box-shadow:0 2px 10px rgba(0,0,0,0.18)}
+.bar-u5{background:linear-gradient(135deg,#c8401a,#e06030)}
+.bar-u6{background:linear-gradient(135deg,#1a50b8,#2a7ae0)}
+.bar-both{background:linear-gradient(135deg,#1a3a78,#2060cc)}
+.bar .icon{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.22);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
+.bar .ttl{color:#fff;font-size:16px;font-weight:700;letter-spacing:.3px}
+.bar .sub{color:rgba(255,255,255,.72);font-size:12px;margin-top:1px}
+.bar .flex1{flex:1}
+
+/* ─── WELCOME ─── */
+#sw .body{flex:1;padding:18px 16px 30px;display:flex;flex-direction:column;align-items:center;gap:16px}
+.w-card{background:var(--white);border-radius:var(--r);padding:24px 20px;width:100%;max-width:520px;box-shadow:var(--sh)}
+.w-card h2{font-size:18px;font-weight:900;margin-bottom:4px}
+.w-card .desc{font-size:13.5px;color:var(--texts);margin-bottom:18px;line-height:1.75}
+.unit-pills{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.pill{padding:7px 14px;border-radius:var(--rx);font-size:12.5px;font-weight:700}
+.pill-u5{background:var(--u5l);color:var(--u5)}
+.pill-u6{background:var(--u6l);color:var(--u6)}
+.sub-pills{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:18px}
+.spill{padding:6px 10px;border-radius:var(--rs);font-size:12px;font-weight:500;text-align:center}
+label.fl{display:block;font-size:12.5px;font-weight:700;color:var(--texts);margin-bottom:5px}
+.inp{width:100%;padding:13px 15px;border:1.5px solid var(--graym);border-radius:var(--rs);font-size:16px;font-family:'Noto Sans TC',sans-serif;color:var(--text);background:var(--white);outline:none;transition:border-color .2s;margin-bottom:12px}
+.inp:focus{border-color:var(--u6)}
+.inp-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn-go{width:100%;padding:16px;background:linear-gradient(135deg,#1a50b8,#2a7ae0);color:#fff;border:none;border-radius:var(--rs);font-size:17px;font-weight:900;font-family:'Noto Sans TC',sans-serif;cursor:pointer;letter-spacing:1px;transition:transform .15s}
+.btn-go:active{transform:scale(.97)}
+.teacher-link{background:none;border:none;color:var(--texth);font-size:12px;cursor:pointer;font-family:'Noto Sans TC',sans-serif;text-decoration:underline;margin-top:6px;display:block;text-align:center}
+.qr-card{background:var(--white);border-radius:var(--r);padding:18px 20px;width:100%;max-width:520px;box-shadow:var(--sh);text-align:center}
+.qr-card p{font-size:13px;color:var(--texts);margin-bottom:12px;font-weight:500}
+.qr-card small{display:block;font-size:10.5px;color:var(--texth);margin-top:10px;word-break:break-all}
+
+/* ─── PROGRESS ─── */
+.prog-wrap{padding:8px 18px 0}
+.prog-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.prog-row .qn{font-size:13px;font-weight:700;color:#fff}
+.prog-row .un{font-size:11px;color:rgba(255,255,255,.75);padding:2px 8px;background:rgba(255,255,255,.18);border-radius:20px}
+.pbar{height:6px;background:rgba(255,255,255,.25);border-radius:3px;overflow:hidden}
+.pfill{height:6px;background:#fff;border-radius:3px;transition:width .45s ease}
+
+/* ─── QUIZ ─── */
+#sq .body{flex:1;padding:14px 14px 20px;display:flex;flex-direction:column;gap:11px;max-width:680px;margin:0 auto;width:100%}
+.q-wrap{background:var(--white);border-radius:var(--r);padding:20px 18px;box-shadow:var(--sh)}
+.cat-tag{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;border-radius:var(--rx);font-size:12px;font-weight:700;margin-bottom:12px}
+.q-body{font-size:17.5px;font-weight:500;line-height:1.75;color:var(--text)}
+.q-body b{font-weight:900}
+.q-svg{display:flex;justify-content:center;margin:14px 0 6px}
+.q-svg svg{max-width:100%}
+.hint{background:#f0f6ff;border-left:3px solid var(--u6);border-radius:0 var(--rs) var(--rs) 0;padding:9px 13px;font-size:12.5px;color:#1a50b8;margin-top:10px;display:none}
+.hint.on{display:block}
+.btn-hint{background:none;border:1.5px dashed var(--u6);color:var(--u6);padding:6px 14px;border-radius:var(--rs);font-size:12px;font-family:'Noto Sans TC',sans-serif;cursor:pointer;margin-top:10px;font-weight:700}
+
+.choices{display:flex;flex-direction:column;gap:9px}
+.ch{display:flex;align-items:center;gap:13px;padding:15px 17px;border:2px solid var(--graym);border-radius:var(--rs);background:var(--white);cursor:pointer;font-size:15.5px;font-family:'Noto Sans TC',sans-serif;color:var(--text);text-align:left;transition:all .15s;width:100%}
+.ch:active{transform:scale(.98)}
+.ch-lbl{width:30px;height:30px;border-radius:50%;background:var(--grayl);border:1.5px solid var(--graym);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--texts);flex-shrink:0;transition:all .15s}
+.ch:hover{border-color:#2a7ae0;background:var(--u6l)}
+.ch:hover .ch-lbl{background:#2a7ae0;color:#fff;border-color:#2a7ae0}
+.ch.correct{border-color:var(--green);background:var(--greenl);pointer-events:none}
+.ch.correct .ch-lbl{background:var(--green);color:#fff;border-color:var(--green)}
+.ch.wrong{border-color:var(--red);background:var(--redl);pointer-events:none}
+.ch.wrong .ch-lbl{background:var(--red);color:#fff;border-color:var(--red)}
+.ch.dim{pointer-events:none;opacity:.55}
+
+.fb{border-radius:var(--rs);padding:13px 15px;font-size:13.5px;font-weight:500;display:none;align-items:flex-start;gap:10px;line-height:1.7}
+.fb.on{display:flex}
+.fb.ok{background:var(--greenl);color:#136848}
+.fb.no{background:var(--redl);color:#a02020}
+.fb-icon{font-size:22px;flex-shrink:0;line-height:1}
+.btn-nx{width:100%;padding:15px;background:linear-gradient(135deg,#1a50b8,#2a7ae0);color:#fff;border:none;border-radius:var(--rs);font-size:16px;font-weight:900;font-family:'Noto Sans TC',sans-serif;cursor:pointer;display:none;letter-spacing:.5px}
+.btn-nx.on{display:block}
+
+/* ─── RESULT ─── */
+#sr .body{flex:1;padding:14px;max-width:680px;margin:0 auto;width:100%}
+.hero{background:var(--white);border-radius:var(--r);padding:22px 18px;box-shadow:var(--sh);margin-bottom:13px;text-align:center}
+.score-ring{width:106px;height:106px;border-radius:50%;margin:0 auto 13px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:6px solid;font-weight:700}
+.score-ring .big{font-size:34px;line-height:1}
+.score-ring .sm{font-size:12px;margin-top:1px;opacity:.8}
+.rh{border-color:var(--green);color:var(--green);background:var(--greenl)}
+.rm{border-color:var(--amber);color:var(--amber);background:var(--amberl)}
+.rl{border-color:var(--red);color:var(--red);background:var(--redl)}
+.hero h2{font-size:17px;font-weight:900;margin-bottom:3px}
+.hero p{font-size:13.5px;color:var(--texts)}
+.stat3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-top:14px}
+.sb{background:var(--grayl);border-radius:var(--rs);padding:11px;text-align:center}
+.sb .v{font-size:23px;font-weight:900;color:var(--u6)}
+.sb .l{font-size:11px;color:var(--texth);margin-top:1px}
+
+.sec-hd{font-size:14.5px;font-weight:900;color:var(--text);margin:13px 0 7px 2px;display:flex;align-items:center;gap:8px}
+.sec-hd::before{content:'';width:4px;height:17px;border-radius:2px;background:var(--u6);display:inline-block}
+
+.cat-card{background:var(--white);border-radius:var(--r);padding:15px 17px;box-shadow:var(--sh);margin-bottom:9px}
+.cat-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.cat-nm{font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px}
+.cat-sc{font-size:13px;font-weight:700;white-space:nowrap}
+.bar-bg{height:8px;background:var(--graym);border-radius:4px;flex:1;margin-left:10px;overflow:hidden}
+.bar-fg{height:8px;border-radius:4px;transition:width .6s ease}
+.wrong-list{margin-top:10px;border-top:1px solid var(--graym);padding-top:10px}
+.wi{padding:9px 11px;background:var(--redl);border-radius:var(--rs);margin-bottom:7px;font-size:13px;line-height:1.65}
+.wi .wlbl{font-size:11px;font-weight:700;color:var(--red);margin-bottom:3px}
+.wi .wa{color:var(--red)}
+.wi .ca{color:var(--green)}
+
+.detail-wrap{margin-bottom:12px}
+.di{background:var(--white);border-radius:var(--r);padding:16px 17px;box-shadow:var(--sh);margin-bottom:8px}
+.di-tags{display:flex;align-items:center;gap:6px;margin-bottom:9px;flex-wrap:wrap}
+.di-tag{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700}
+.di-q{font-size:14px;margin-bottom:9px;line-height:1.75}
+.di-ans{font-size:13px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.di-exp{font-size:12.5px;color:var(--texts);margin-top:8px;padding-top:8px;border-top:1px solid var(--graym);line-height:1.7}
+
+.btnrow{display:flex;gap:10px;margin:13px 0 26px}
+.btn2a{flex:1;padding:13px;border:2px solid var(--u6);background:var(--white);color:var(--u6);border-radius:var(--rs);font-size:14px;font-weight:700;font-family:'Noto Sans TC',sans-serif;cursor:pointer}
+.btn2b{flex:1;padding:13px;background:linear-gradient(135deg,#1a50b8,#2a7ae0);color:#fff;border:none;border-radius:var(--rs);font-size:14px;font-weight:700;font-family:'Noto Sans TC',sans-serif;cursor:pointer}
+
+/* ─── TEACHER ─── */
+#st .body{flex:1;padding:14px;max-width:760px;margin:0 auto;width:100%}
+.tc{background:var(--white);border-radius:var(--r);padding:17px 18px;box-shadow:var(--sh);margin-bottom:12px}
+.tc h3{font-size:15px;font-weight:900;color:var(--u6);margin-bottom:13px}
+.sr{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--graym)}
+.sr:last-of-type{border-bottom:none}
+.av{width:38px;height:38px;border-radius:50%;background:var(--u6l);color:var(--u6);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.sinfo .nm{font-size:14px;font-weight:700}
+.sinfo .mt{font-size:12px;color:var(--texts)}
+.sbadge{padding:5px 12px;border-radius:20px;font-size:13px;font-weight:700;white-space:nowrap}
+.empty{text-align:center;padding:28px;color:var(--texth);font-size:14px}
+.btn-clr{background:none;border:1.5px solid var(--red);color:var(--red);padding:8px 16px;border-radius:var(--rs);font-size:13px;font-family:'Noto Sans TC',sans-serif;cursor:pointer;margin-top:12px}
+.back-btn{background:none;border:none;color:rgba(255,255,255,.8);font-size:13px;font-family:'Noto Sans TC',sans-serif;cursor:pointer;padding:0;display:flex;align-items:center;gap:4px}
+.weakness-bar{margin-bottom:14px}
+.wb-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px}
+.wb-bg{height:9px;background:var(--graym);border-radius:5px;overflow:hidden}
+.wb-fg{height:9px;border-radius:5px}
+.remedy-box{margin-top:14px;padding:12px 14px;background:var(--amberl);border-radius:var(--rs);font-size:13px;color:var(--amber);line-height:1.7}
+
+@media print{.bar .btn,.btnrow,.btn-go,.back-btn,.teacher-link,.qr-card{display:none!important}body{background:#fff}}
+@media(max-width:380px){.sub-pills{grid-template-columns:1fr}.stat3{grid-template-columns:1fr 1fr}.inp-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- ══════ WELCOME ══════ -->
+<div id="sw" class="screen active">
+  <div class="bar bar-both">
+    <div class="icon">📚</div>
+    <div class="flex1">
+      <div class="ttl">六下數學診斷測驗｜翰林版</div>
+      <div class="sub">第五單元 怎樣解題 ✦ 第六單元 角柱與圓柱</div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="w-card">
+      <h2>👋 同學，準備好了嗎？</h2>
+      <p class="desc">本測驗共 <b>20 題</b>，涵蓋翰林版六下兩個單元的核心概念。<br>請誠實作答，結果只是幫助老師了解你的學習狀況。</p>
+      <div class="unit-pills">
+        <span class="pill pill-u5">🧩 第五單元：怎樣解題（10題）</span>
+        <span class="pill pill-u6">📐 第六單元：角柱與圓柱（10題）</span>
+      </div>
+      <div class="sub-pills">
+        <span class="spill" style="background:#fdf0eb;color:#c8401a">找規律</span>
+        <span class="spill" style="background:#fdf0eb;color:#c8401a">逆向思考</span>
+        <span class="spill" style="background:#fdf0eb;color:#c8401a">假設法</span>
+        <span class="spill" style="background:#fdf0eb;color:#c8401a">列舉畫圖法</span>
+        <span class="spill" style="background:#ebf2fd;color:#1a50b8">角柱基本概念</span>
+        <span class="spill" style="background:#ebf2fd;color:#1a50b8">圓柱基本概念</span>
+        <span class="spill" style="background:#ebf2fd;color:#1a50b8">展開圖</span>
+        <span class="spill" style="background:#ebf2fd;color:#1a50b8">體積與表面積</span>
+      </div>
+      <label class="fl">姓名</label>
+      <input class="inp" id="iname" type="text" placeholder="請輸入你的姓名" maxlength="20">
+      <div class="inp-row">
+        <div>
+          <label class="fl">班級</label>
+          <select class="inp" id="icls" style="appearance:none">
+            <option value="">請選擇</option>
+            <option>六年甲班</option><option>六年乙班</option><option>六年丙班</option>
+            <option>六年丁班</option><option>六年戊班</option>
+          </select>
+        </div>
+        <div>
+          <label class="fl">座號</label>
+          <input class="inp" id="iseat" type="number" placeholder="座號" min="1" max="40">
+        </div>
+      </div>
+      <button class="btn-go" onclick="startQuiz()">開始測驗 →</button>
+      <button class="teacher-link" onclick="showTeacher()">教師成績管理 / 補救藍本</button>
+    </div>
+    <div class="qr-card">
+      <p>📱 讓同學掃描 QR Code 在平板上作答</p>
+      <div id="qrbox"></div>
+      <small id="qrurl"></small>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ QUIZ ══════ -->
+<div id="sq" class="screen">
+  <div class="bar" id="q-bar">
+    <div class="icon" id="q-icon">📐</div>
+    <div class="flex1">
+      <div class="prog-row">
+        <div class="qn" id="qcnt">1 / 20</div>
+        <div class="un" id="q-unit-tag">第五單元</div>
+      </div>
+      <div class="pbar"><div class="pfill" id="pfill" style="width:5%"></div></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="q-wrap">
+      <div id="qcat" class="cat-tag"></div>
+      <div id="qtext" class="q-body"></div>
+      <div id="qsvg" class="q-svg"></div>
+      <button class="btn-hint" id="btn-hint" onclick="toggleHint()" style="display:none">💡 看提示</button>
+      <div id="qhint" class="hint"></div>
+    </div>
+    <div class="choices" id="choices"></div>
+    <div class="fb" id="fb"><span class="fb-icon" id="fi"></span><div id="ft"></div></div>
+    <button class="btn-nx" id="bnnx" onclick="nextQ()">下一題 →</button>
+  </div>
+</div>
+
+<!-- ══════ RESULT ══════ -->
+<div id="sr" class="screen">
+  <div class="bar bar-both">
+    <div class="icon">📊</div>
+    <div class="flex1">
+      <div class="ttl">測驗結果報告</div>
+      <div class="sub" id="rname"></div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="hero">
+      <div class="score-ring" id="sring"><div class="big" id="snum"></div><div class="sm">分</div></div>
+      <h2 id="smsg"></h2>
+      <p id="ssub"></p>
+      <div class="stat3">
+        <div class="sb"><div class="v" id="st1"></div><div class="l">答對題數</div></div>
+        <div class="sb"><div class="v" id="st2"></div><div class="l">答錯題數</div></div>
+        <div class="sb"><div class="v" id="st3"></div><div class="l">得分率</div></div>
+      </div>
+    </div>
+    <div class="sec-hd">各概念分類表現</div>
+    <div id="catrpt"></div>
+    <div class="sec-hd">錯誤題目詳解</div>
+    <div id="wrongdet"></div>
+    <div class="btnrow">
+      <button class="btn2a" onclick="window.print()">🖨 列印報告</button>
+      <button class="btn2b" onclick="resetAll()">重新作答</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ TEACHER ══════ -->
+<div id="st" class="screen">
+  <div class="bar bar-both">
+    <div class="icon">👩‍🏫</div>
+    <div class="flex1">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div class="ttl">教師成績管理</div>
+        <button class="back-btn" onclick="go('sw')">← 返回</button>
+      </div>
+      <div class="sub">補救教學分析藍本</div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="tc"><h3>📋 學生作答記錄</h3><div id="tlist"></div></div>
+    <div class="tc"><h3>🎯 全班弱點分析</h3><div id="tweak"></div></div>
+    <div class="tc"><h3>📌 補救教學建議</h3><div id="tremed"></div></div>
+  </div>
+</div>
+
+<script>
+// ── 題目資料庫 ──────────────────────────────────────────────────────────────
+const QS = [
+// ═══ 第五單元：怎樣解題 ═══
+{
+  id:1, unit:'第五單元', sub:'找規律',
+  uc:{bg:'#fdf0eb',c:'#c8401a'}, ui:'🧩',
+  text:'觀察下列數列的規律：<b>1, 4, 9, 16, 25, ...</b><br>請問第 <b>10</b> 個數是多少？',
+  svg:`<svg viewBox="0 0 300 60" width="300" height="60" xmlns="http://www.w3.org/2000/svg">
+    <text x="10" y="38" font-size="15" fill="#c8401a" font-weight="bold" font-family="serif">1²=1</text>
+    <text x="60" y="38" font-size="15" fill="#c8401a" font-weight="bold" font-family="serif">2²=4</text>
+    <text x="112" y="38" font-size="15" fill="#c8401a" font-weight="bold" font-family="serif">3²=9</text>
+    <text x="163" y="38" font-size="15" fill="#8a3800" font-weight="bold" font-family="serif">4²=16</text>
+    <text x="220" y="38" font-size="15" fill="#8a3800" font-weight="bold" font-family="serif">...</text>
+    <text x="10" y="55" font-size="11" fill="#a06030" font-family="sans-serif">每項＝n²</text>
+  </svg>`,
+  hint:'規律是第 n 個數＝n²，第 10 個數就是 10²。',
+  choices:['A. 81','B. 90','C. 100','D. 121'],
+  ans:2,
+  exp:'數列是 1²、2²、3²…平方數，第10項＝10²＝<b>100</b>'
+},
+{
+  id:2, unit:'第五單元', sub:'找規律',
+  uc:{bg:'#fdf0eb',c:'#c8401a'}, ui:'🧩',
+  text:'用火柴棒排正方形，如圖：第1個用<b>4</b>根，第2個用<b>7</b>根，第3個用<b>10</b>根…<br>第 <b>8</b> 個圖形需要幾根火柴？',
+  svg:`<svg viewBox="0 0 280 70" width="280" height="70" xmlns="http://www.w3.org/2000/svg">
+    <rect x="10" y="10" width="22" height="22" rx="2" fill="none" stroke="#c8401a" stroke-width="3"/>
+    <text x="13" y="48" font-size="12" fill="#c8401a" font-weight="bold">4根</text>
+    <rect x="55" y="10" width="22" height="22" rx="2" fill="none" stroke="#c8401a" stroke-width="3"/>
+    <rect x="77" y="10" width="22" height="22" rx="2" fill="none" stroke="#c8401a" stroke-width="3"/>
+    <text x="56" y="48" font-size="12" fill="#c8401a" font-weight="bold">7根</text>
+    <rect x="115" y="10" width="22" height="22" rx="2" fill="none" stroke="#c8401a" stroke-width="3"/>
+    <rect x="137" y="10" width="22" height="22" rx="2" fill="none" stroke="#c8401a" stroke-width="3"/>
+    <rect x="159" y="10" width="22" height="22" rx="2" fill="none" stroke="#c8401a" stroke-width="3"/>
+    <text x="120" y="48" font-size="12" fill="#c8401a" font-weight="bold">10根</text>
+    <text x="210" y="36" font-size="22" fill="#8a3800" font-weight="bold">…</text>
+  </svg>`,
+  hint:'公式：第 n 個圖形＝3n＋1 根，把 n＝8 代入計算。',
+  choices:['A. 22根','B. 25根','C. 28根','D. 31根'],
+  ans:1,
+  exp:'規律是 3n＋1，第8個：3×8＋1＝<b>25 根</b>'
+},
+{
+  id:3, unit:'第五單元', sub:'逆向思考',
+  uc:{bg:'#fdf0eb',c:'#c8401a'}, ui:'🧩',
+  text:'一個數<b>加上 18</b>，再<b>除以 4</b>，結果等於 <b>9</b>。<br>這個數是多少？',
+  svg:`<svg viewBox="0 0 320 52" width="320" height="52" xmlns="http://www.w3.org/2000/svg">
+    <rect x="5" y="12" width="50" height="28" rx="6" fill="#fdf0eb" stroke="#c8401a" stroke-width="1.5"/>
+    <text x="30" y="31" text-anchor="middle" font-size="14" fill="#c8401a" font-weight="bold">?</text>
+    <text x="65" y="31" font-size="13" fill="#555">＋18</text>
+    <text x="105" y="31" font-size="13" fill="#555">➜ ÷4 ➜</text>
+    <rect x="178" y="12" width="38" height="28" rx="6" fill="#e7f6ef" stroke="#178a56" stroke-width="1.5"/>
+    <text x="197" y="31" text-anchor="middle" font-size="14" fill="#178a56" font-weight="bold">9</text>
+    <text x="225" y="31" font-size="12" fill="#888">（逆向回推）</text>
+  </svg>`,
+  hint:'逆向思考：結果 9 先乘以 4，再減去 18。',
+  choices:['A. 10','B. 14','C. 18','D. 22'],
+  ans:2,
+  exp:'逆向：9×4＝36，36−18＝<b>18</b>'
+},
+{
+  id:4, unit:'第五單元', sub:'逆向思考',
+  uc:{bg:'#fdf0eb',c:'#c8401a'}, ui:'🧩',
+  text:'小明把一些糖果<b>平分成 3 份</b>，再從其中一份<b>取走 5 顆</b>，剩下 <b>7 顆</b>。<br>他原來有幾顆糖果？',
+  hint:'先把 7 加回 5，得到一份的數量，再乘以 3。',
+  choices:['A. 27顆','B. 30顆','C. 36顆','D. 42顆'],
+  ans:2,
+  exp:'逆向：7＋5＝12（一份），12×3＝<b>36 顆</b>'
+},
+{
+  id:5, unit:'第五單元', sub:'假設法',
+  uc:{bg:'#fdf0eb',c:'#c8401a'}, ui:'🧩',
+  text:'雞和兔共有 <b>12 隻</b>，腳共有 <b>34 隻</b>。<br>兔子有幾隻？',
+  svg:`<svg viewBox="0 0 280 56" width="280" height="56" xmlns="http://www.w3.org/2000/svg">
+    <text x="10" y="22" font-size="13" fill="#555">假設全是雞：12×2＝24隻腳</text>
+    <text x="10" y="42" font-size="13" fill="#c8401a" font-weight="bold">差34−24＝10隻腳 → 每換1隻兔多2腳</text>
+  </svg>`,
+  hint:'假設全部是雞（2隻腳），算出腳的差距，再換成兔子。',
+  choices:['A. 4隻','B. 5隻','C. 6隻','D. 7隻'],
+  ans:1,
+  exp:'全雞：12×2＝24，差34−24＝10，每換1兔多2腳，10÷2＝<b>5 隻兔</b>'
+},
+{
+  id:6, unit:'第五單元', sub:'假設法',
+  uc:{bg:'#fdf0eb',c:'#c8401a'}, ui:'🧩',
+  text:'大人票 <b>90 元</b>，小孩票 <b>50 元</b>，共售出 <b>15 張</b>，總收入 <b>910 元</b>。<br>大人票售出幾張？',
+  hint:'假設全賣小孩票，算出總差額，再換算成大人票張數。',
+  choices:['A. 3張','B. 4張','C. 5張','D. 6張'],
+  ans:1,
+  exp:'全小孩：15×50＝750元，差910−750＝160元，每張大人票多40元，160÷40＝<b>4 張</b>'
+},
+{
+  id:7, unit:'第五單元', sub:'列舉畫圖法',
+  uc:{bg:'#fdf0eb',c:'#c8401a'}, ui:'🧩',
+  text:'從甲地到乙地有 <b>3 條路</b>，從乙地到丙地有 <b>2 條路</b>。<br>從甲地經乙地到丙地，共有幾種走法？',
+  svg:`<svg viewBox="0 0 260 80" width="260" height="80" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="40" cy="40" r="16" fill="#fdf0eb" stroke="#c8401a" stroke-width="2"/>
+    <text x="40" y="45" text-anchor="middle" font-size="13" fill="#c8401a" font-weight="bold">甲</text>
+    <circle cx="140" cy="40" r="16" fill="#fdf0eb" stroke="#c8401a" stroke-width="2"/>
+    <text x="140" y="45" text-anchor="middle" font-size="13" fill="#c8401a" font-weight="bold">乙</text>
+    <circle cx="230" cy="40" r="16" fill="#ebf2fd" stroke="#1a50b8" stroke-width="2"/>
+    <text x="230" y="45" text-anchor="middle" font-size="13" fill="#1a50b8" font-weight="bold">丙</text>
+    <line x1="56" y1="33" x2="124" y2="28" stroke="#c8401a" stroke-width="1.5" stroke-dasharray="3"/>
+    <line x1="56" y1="40" x2="124" y2="40" stroke="#c8401a" stroke-width="1.5"/>
+    <line x1="56" y1="47" x2="124" y2="52" stroke="#c8401a" stroke-width="1.5" stroke-dasharray="3"/>
+    <line x1="156" y1="33" x2="214" y2="30" stroke="#1a50b8" stroke-width="1.5" stroke-dasharray="3"/>
+    <line x1="156" y1="47" x2="214" y2="50" stroke="#1a50b8" stroke-width="1.5"/>
+    <text x="90" y="20" font-size="11" fill="#c8401a">3條路</text>
+    <text x="178" y="20" font-size="11" fill="#1a50b8">2條路</text>
+  </svg>`,
+  hint:'用乘法計算路線總數：甲→乙的路數 × 乙→丙的路數。',
+  choices:['A. 5種','B. 6種','C. 8種','D. 9種'],
+  ans:1,
+  exp:'3條路×2條路＝<b>6 種走法</b>（乘法原理）'
+},
+{
+  id:8, unit:'第五單元', sub:'找規律',
+  uc:{bg:'#fdf0eb',c:'#c8401a'}, ui:'🧩',
+  text:'觀察規律：<br>1×1＝1<br>11×11＝121<br>111×111＝12321<br>請問 <b>1111×1111</b> 等於多少？',
+  hint:'注意數字的對稱排列規律：從1到n再回到1。',
+  choices:['A. 1233321','B. 1234321','C. 12344321','D. 123321'],
+  ans:1,
+  exp:'規律是對稱數：1、121、12321、<b>1234321</b>（中間最大數字等於1的個數）'
+},
+{
+  id:9, unit:'第五單元', sub:'逆向思考',
+  uc:{bg:'#fdf0eb',c:'#c8401a'}, ui:'🧩',
+  text:'小華有一些錢，<b>第一天花掉一半</b>，<b>第二天再花掉剩下的一半</b>，最後還剩 <b>30 元</b>。<br>小華原來有多少元？',
+  hint:'從結果 30 元往回推：乘以2，再乘以2。',
+  choices:['A. 90元','B. 100元','C. 120元','D. 150元'],
+  ans:2,
+  exp:'逆向：30×2＝60（第一天後），60×2＝<b>120 元</b>（原有）'
+},
+{
+  id:10, unit:'第五單元', sub:'列舉畫圖法',
+  uc:{bg:'#fdf0eb',c:'#c8401a'}, ui:'🧩',
+  text:'小美和小明從同一地點<b>反向出發</b>，小美每分鐘走 <b>60 公尺</b>，小明每分鐘走 <b>40 公尺</b>。<br>幾分鐘後兩人相距 <b>500 公尺</b>？',
+  svg:`<svg viewBox="0 0 300 60" width="300" height="60" xmlns="http://www.w3.org/2000/svg">
+    <line x1="20" y1="30" x2="280" y2="30" stroke="#dde2ea" stroke-width="2"/>
+    <circle cx="150" cy="30" r="8" fill="#f0f4ff" stroke="#555" stroke-width="1.5"/>
+    <text x="150" y="55" text-anchor="middle" font-size="10" fill="#888">出發點</text>
+    <text x="55" y="24" font-size="11" fill="#c8401a" font-weight="bold">←60m/分(小美)</text>
+    <text x="168" y="24" font-size="11" fill="#1a50b8" font-weight="bold">小明 40m/分→</text>
+    <text x="90" y="14" font-size="11" fill="#c8401a">←</text>
+    <text x="200" y="14" font-size="11" fill="#1a50b8">→</text>
+  </svg>`,
+  hint:'兩人速度相加（反向），再用距離除以總速度。',
+  choices:['A. 4分鐘','B. 5分鐘','C. 6分鐘','D. 7分鐘'],
+  ans:1,
+  exp:'每分鐘拉開60＋40＝100公尺，500÷100＝<b>5 分鐘</b>'
+},
+// ═══ 第六單元：角柱與圓柱 ═══
+{
+  id:11, unit:'第六單元', sub:'角柱基本概念',
+  uc:{bg:'#ebf2fd',c:'#1a50b8'}, ui:'📐',
+  text:'一個 <b>六角柱</b> 有幾個頂點？',
+  svg:`<svg viewBox="0 0 220 90" width="220" height="90" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="55,18 85,8 115,18 115,42 85,52 55,42" fill="#ebf2fd" stroke="#1a50b8" stroke-width="2"/>
+    <polygon points="75,38 105,28 135,38 135,62 105,72 75,62" fill="none" stroke="#1a50b8" stroke-width="2" stroke-dasharray="4"/>
+    <line x1="55" y1="18" x2="75" y2="38" stroke="#1a50b8" stroke-width="1.5"/>
+    <line x1="85" y1="8" x2="105" y2="28" stroke="#1a50b8" stroke-width="1.5"/>
+    <line x1="115" y1="18" x2="135" y2="38" stroke="#1a50b8" stroke-width="1.5"/>
+    <line x1="115" y1="42" x2="135" y2="62" stroke="#1a50b8" stroke-width="1.5"/>
+    <line x1="85" y1="52" x2="105" y2="72" stroke="#1a50b8" stroke-width="1.5"/>
+    <line x1="55" y1="42" x2="75" y2="62" stroke="#1a50b8" stroke-width="1.5"/>
+    <circle cx="55" cy="18" r="3" fill="#c8401a"/><circle cx="85" cy="8" r="3" fill="#c8401a"/>
+    <circle cx="115" cy="18" r="3" fill="#c8401a"/><circle cx="115" cy="42" r="3" fill="#c8401a"/>
+    <circle cx="85" cy="52" r="3" fill="#c8401a"/><circle cx="55" cy="42" r="3" fill="#c8401a"/>
+    <circle cx="75" cy="38" r="3" fill="#c8401a"/><circle cx="105" cy="28" r="3" fill="#c8401a"/>
+    <circle cx="135" cy="38" r="3" fill="#c8401a"/><circle cx="135" cy="62" r="3" fill="#c8401a"/>
+    <circle cx="105" cy="72" r="3" fill="#c8401a"/><circle cx="75" cy="62" r="3" fill="#c8401a"/>
+    <text x="148" y="30" font-size="12" fill="#c8401a">● 頂點</text>
+    <text x="148" y="48" font-size="11" fill="#888">（共？個）</text>
+  </svg>`,
+  hint:'n角柱的頂點數＝n×2（上底n個＋下底n個）。',
+  choices:['A. 6個','B. 8個','C. 10個','D. 12個'],
+  ans:3,
+  exp:'六角柱：上底6個頂點＋下底6個頂點＝<b>12 個</b>'
+},
+{
+  id:12, unit:'第六單元', sub:'角柱基本概念',
+  uc:{bg:'#ebf2fd',c:'#1a50b8'}, ui:'📐',
+  text:'一個 <b>四角柱</b> 有幾條棱（稜）？',
+  hint:'n角柱的棱數＝n×3（上底n條＋下底n條＋側面n條）。',
+  choices:['A. 8條','B. 10條','C. 12條','D. 16條'],
+  ans:2,
+  exp:'四角柱：上底4＋下底4＋側棱4＝<b>12 條</b>棱'
+},
+{
+  id:13, unit:'第六單元', sub:'角柱基本概念',
+  uc:{bg:'#ebf2fd',c:'#1a50b8'}, ui:'📐',
+  text:'下列關於角柱的敘述，<b>哪一個是正確的</b>？',
+  hint:'n角柱：面數＝n＋2，頂點數＝2n，棱數＝3n。',
+  choices:['A. 三角柱有4個面','B. 五角柱有10個頂點','C. 六角柱有12條棱','D. 四角柱有8個面'],
+  ans:1,
+  exp:'五角柱頂點數＝5×2＝<b>10個</b> ✓（A三角柱有5面、C六角柱有18棱、D四角柱有6面）'
+},
+{
+  id:14, unit:'第六單元', sub:'展開圖',
+  uc:{bg:'#ebf2fd',c:'#1a50b8'}, ui:'📐',
+  text:'把一個<b>三角柱</b>展開，展開圖會包含哪些圖形？',
+  svg:`<svg viewBox="0 0 300 90" width="300" height="90" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="40,70 70,20 100,70" fill="#ebf2fd" stroke="#1a50b8" stroke-width="2"/>
+    <rect x="108" y="20" width="40" height="50" fill="#d0e4fa" stroke="#1a50b8" stroke-width="1.5"/>
+    <rect x="148" y="20" width="40" height="50" fill="#d0e4fa" stroke="#1a50b8" stroke-width="1.5"/>
+    <rect x="188" y="20" width="40" height="50" fill="#d0e4fa" stroke="#1a50b8" stroke-width="1.5"/>
+    <polygon points="228,20 243,5 258,20" fill="none" stroke="#1a50b8" stroke-width="2" stroke-dasharray="3"/>
+    <polygon points="40,70 70,20 100,70" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="2" transform="translate(188,0)"/>
+    <text x="135" y="88" font-size="11" fill="#1a50b8">三個長方形（側面）</text>
+    <text x="30" y="88" font-size="11" fill="#c8401a">底面</text>
+  </svg>`,
+  hint:'三角柱有2個底面（三角形）和3個側面（長方形）。',
+  choices:['A. 2個三角形和2個長方形','B. 2個三角形和3個長方形','C. 3個三角形和2個長方形','D. 3個三角形和3個長方形'],
+  ans:1,
+  exp:'三角柱展開＝<b>2個三角形</b>（上下底面）＋<b>3個長方形</b>（三個側面）'
+},
+{
+  id:15, unit:'第六單元', sub:'展開圖',
+  uc:{bg:'#ebf2fd',c:'#1a50b8'}, ui:'📐',
+  text:'圓柱沿側面剪開展開後，側面會形成什麼形狀？',
+  svg:`<svg viewBox="0 0 280 90" width="280" height="90" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="60" cy="40" rx="30" ry="10" fill="#ebf2fd" stroke="#1a50b8" stroke-width="2"/>
+    <rect x="30" y="40" width="60" height="36" fill="#d0e4fa" stroke="#1a50b8" stroke-width="1.5"/>
+    <ellipse cx="60" cy="76" rx="30" ry="10" fill="#ebf2fd" stroke="#1a50b8" stroke-width="2"/>
+    <text x="100" y="55" font-size="20" fill="#555">→</text>
+    <rect x="130" y="20" width="80" height="50" fill="#d0e4fa" stroke="#1a50b8" stroke-width="2"/>
+    <text x="155" y="50" font-size="11" fill="#1a50b8" font-weight="bold">側面</text>
+    <text x="140" y="88" font-size="11" fill="#555">（剪開展開）</text>
+    <ellipse cx="240" cy="55" rx="20" ry="7" fill="#ebf2fd" stroke="#c8401a" stroke-width="1.5" stroke-dasharray="3"/>
+    <text x="228" y="80" font-size="10" fill="#c8401a">底面圓</text>
+  </svg>`,
+  hint:'圓柱的側面捲起來是一個圓筒，展開後…',
+  choices:['A. 圓形','B. 三角形','C. 長方形','D. 梯形'],
+  ans:2,
+  exp:'圓柱側面展開後是<b>長方形</b>（寬＝底面周長，高＝圓柱高度）'
+},
+{
+  id:16, unit:'第六單元', sub:'體積與表面積',
+  uc:{bg:'#ebf2fd',c:'#1a50b8'}, ui:'📐',
+  text:'一個三角柱，底面是直角三角形，兩股分別為 <b>6 公分</b>和 <b>8 公分</b>，高為 <b>10 公分</b>。<br>體積是多少立方公分？',
+  svg:`<svg viewBox="0 0 240 90" width="240" height="90" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="40,75 100,75 40,35" fill="#ebf2fd" stroke="#1a50b8" stroke-width="2"/>
+    <line x1="40" y1="75" x2="60" y2="45" stroke="#1a50b8" stroke-width="1.5" stroke-dasharray="4"/>
+    <line x1="100" y1="75" x2="120" y2="45" stroke="#1a50b8" stroke-width="1.5" stroke-dasharray="4"/>
+    <line x1="40" y1="35" x2="60" y2="5" stroke="#1a50b8" stroke-width="1.5" stroke-dasharray="4"/>
+    <polygon points="60,45 120,45 60,5" fill="none" stroke="#1a50b8" stroke-width="1.5"/>
+    <line x1="60" y1="5" x2="120" y2="45" stroke="#1a50b8" stroke-width="1"/>
+    <text x="55" y="85" font-size="11" fill="#555">底＝6</text>
+    <text x="102" y="60" font-size="11" fill="#555">8</text>
+    <text x="128" y="28" font-size="11" fill="#c8401a" font-weight="bold">高10</text>
+    <text x="155" y="50" font-size="12" fill="#1a50b8">底面積</text>
+    <text x="155" y="65" font-size="12" fill="#1a50b8">＝6×8÷2</text>
+    <text x="155" y="80" font-size="12" fill="#1a50b8">＝24cm²</text>
+  </svg>`,
+  hint:'角柱體積＝底面積×高。先算直角三角形底面積。',
+  choices:['A. 200立方公分','B. 240立方公分','C. 280立方公分','D. 320立方公分'],
+  ans:1,
+  exp:'底面積＝6×8÷2＝24，體積＝24×10＝<b>240 立方公分</b>'
+},
+{
+  id:17, unit:'第六單元', sub:'體積與表面積',
+  uc:{bg:'#ebf2fd',c:'#1a50b8'}, ui:'📐',
+  text:'一個四角柱（底面為正方形），底面邊長 <b>6 公分</b>，高 <b>9 公分</b>。<br>體積是多少立方公分？',
+  hint:'角柱體積＝底面積×高。正方形面積＝邊長×邊長。',
+  choices:['A. 288立方公分','B. 306立方公分','C. 324立方公分','D. 342立方公分'],
+  ans:2,
+  exp:'底面積＝6×6＝36，體積＝36×9＝<b>324 立方公分</b>'
+},
+{
+  id:18, unit:'第六單元', sub:'體積與表面積',
+  uc:{bg:'#ebf2fd',c:'#1a50b8'}, ui:'📐',
+  text:'一個圓柱，底面半徑為 <b>4 公分</b>，高為 <b>10 公分</b>。<br>體積約是多少立方公分？（π≈3.14）',
+  svg:`<svg viewBox="0 0 200 90" width="200" height="90" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="80" cy="22" rx="40" ry="13" fill="#ebf2fd" stroke="#1a50b8" stroke-width="2"/>
+    <rect x="40" y="22" width="80" height="50" fill="#d0e4fa" stroke="#1a50b8" stroke-width="1.5"/>
+    <ellipse cx="80" cy="72" rx="40" ry="13" fill="#c8dcf8" stroke="#1a50b8" stroke-width="2"/>
+    <line x1="80" y1="22" x2="120" y2="22" stroke="#c8401a" stroke-width="2"/>
+    <text x="90" y="18" font-size="11" fill="#c8401a" font-weight="bold">r＝4</text>
+    <line x1="148" y1="22" x2="148" y2="72" stroke="#1a50b8" stroke-width="1.5" marker-end="url(#ar)"/>
+    <text x="152" y="50" font-size="11" fill="#1a50b8" font-weight="bold">h＝10</text>
+    <text x="148" y="89" font-size="10" fill="#555">V＝π×r²×h</text>
+  </svg>`,
+  hint:'圓柱體積＝π×r²×h，先算 r²＝4²＝16。',
+  choices:['A. 401.92立方公分','B. 452.16立方公分','C. 502.4立方公分','D. 552.64立方公分'],
+  ans:2,
+  exp:'V＝3.14×4²×10＝3.14×16×10＝<b>502.4 立方公分</b>'
+},
+{
+  id:19, unit:'第六單元', sub:'體積與表面積',
+  uc:{bg:'#ebf2fd',c:'#1a50b8'}, ui:'📐',
+  text:'一個圓柱，底面半徑 <b>3 公分</b>，高 <b>8 公分</b>。<br>側面積約是多少平方公分？（π≈3.14）',
+  hint:'側面積＝底面周長×高＝2×π×r×h。',
+  choices:['A. 125.6平方公分','B. 150.72平方公分','C. 175.84平方公分','D. 188.4平方公分'],
+  ans:1,
+  exp:'側面積＝2×3.14×3×8＝<b>150.72 平方公分</b>'
+},
+{
+  id:20, unit:'第六單元', sub:'體積與表面積',
+  uc:{bg:'#ebf2fd',c:'#1a50b8'}, ui:'📐',
+  text:'一個正三角柱，底面是邊長 <b>5 公分</b>的等邊三角形（底面積≈10.8 平方公分），高為 <b>12 公分</b>。<br>表面積約是多少平方公分？',
+  svg:`<svg viewBox="0 0 280 72" width="280" height="72" xmlns="http://www.w3.org/2000/svg">
+    <text x="10" y="20" font-size="12" fill="#1a50b8" font-weight="bold">表面積＝2個底面＋側面（3個長方形）</text>
+    <text x="10" y="40" font-size="12" fill="#555">＝ 2 × 10.8 ＋ 周長 × 高</text>
+    <text x="10" y="58" font-size="12" fill="#c8401a" font-weight="bold">＝ 21.6 ＋ (5×3) × 12</text>
+  </svg>`,
+  hint:'表面積＝2×底面積＋底面周長×高（周長＝5×3）。',
+  choices:['A. 180平方公分','B. 190.8平方公分','C. 201.6平方公分','D. 212.4平方公分'],
+  ans:2,
+  exp:'2×10.8＋(5×3)×12＝21.6＋180＝<b>201.6 平方公分</b>'
+}
+];
+
+// ── 狀態 ────────────────────────────────────────────────────────────────────
+let curQ=0, answers=[], stu={}, answered=false;
+
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// ── 開始測驗 ─────────────────────────────────────────────────────────────────
+function startQuiz(){
+  const name=document.getElementById('iname').value.trim();
+  const cls=document.getElementById('icls').value;
+  const seat=document.getElementById('iseat').value;
+  if(!name){alert('請輸入姓名！');return;}
+  if(!cls){alert('請選擇班級！');return;}
+  if(!seat){alert('請輸入座號！');return;}
+  stu={name,cls,seat,time:new Date().toLocaleString('zh-TW')};
+  answers=[]; curQ=0;
+  loadQ(0);
+  go('sq');
+}
+
+// ── 載入題目 ─────────────────────────────────────────────────────────────────
+function loadQ(idx){
+  answered=false;
+  const q=QS[idx];
+  const pct=Math.round((idx+1)/20*100);
+  document.getElementById('qcnt').textContent=(idx+1)+' / 20';
+  document.getElementById('pfill').style.width=pct+'%';
+  document.getElementById('q-unit-tag').textContent=q.unit;
+  document.getElementById('q-icon').textContent=q.ui;
+  const bar=document.getElementById('q-bar');
+  bar.className='bar '+(q.unit==='第五單元'?'bar-u5':'bar-u6');
+  const tag=document.getElementById('qcat');
+  tag.textContent=q.unit+' · '+q.sub;
+  tag.style.background=q.uc.bg; tag.style.color=q.uc.c;
+  document.getElementById('qtext').innerHTML=q.text;
+  const svgEl=document.getElementById('qsvg');
+  svgEl.innerHTML=q.svg||'';
+  svgEl.style.display=q.svg?'flex':'none';
+  const hintBtn=document.getElementById('btn-hint');
+  const hintEl=document.getElementById('qhint');
+  if(q.hint){
+    hintBtn.style.display='inline-block';
+    hintEl.textContent='💡 '+q.hint;
+    hintEl.className='hint';
+  } else {
+    hintBtn.style.display='none';
+    hintEl.className='hint';
+  }
+  const cc=document.getElementById('choices');
+  cc.innerHTML='';
+  q.choices.forEach((ch,i)=>{
+    const b=document.createElement('button');
+    b.className='ch';
+    b.innerHTML=`<span class="ch-lbl">${['A','B','C','D'][i]}</span><span>${ch.slice(3)}</span>`;
+    b.onclick=()=>pick(i);
+    cc.appendChild(b);
+  });
+  document.getElementById('fb').className='fb';
+  document.getElementById('bnnx').className='btn-nx';
+}
+
+function toggleHint(){
+  const h=document.getElementById('qhint');
+  h.classList.toggle('on');
+  document.getElementById('btn-hint').textContent=h.classList.contains('on')?'💡 收起提示':'💡 看提示';
+}
+
+function pick(idx){
+  if(answered)return;
+  answered=true;
+  const q=QS[curQ];
+  const ok=idx===q.ans;
+  answers.push({id:q.id,unit:q.unit,sub:q.sub,text:q.text,correct:ok,
+    chosen:q.choices[idx],right:q.choices[q.ans],exp:q.exp});
+  document.querySelectorAll('.ch').forEach((b,i)=>{
+    if(i===q.ans)b.classList.add('correct');
+    else if(i===idx&&!ok)b.classList.add('wrong');
+    else b.classList.add('dim');
+  });
+  const fb=document.getElementById('fb');
+  document.getElementById('fi').textContent=ok?'✅':'❌';
+  document.getElementById('ft').innerHTML=ok
+    ?'答對了！<br><span style="font-size:12.5px;opacity:.85">'+q.exp+'</span>'
+    :'答錯了，加油！<br><span style="font-size:12.5px">'+q.exp+'</span>';
+  fb.className='fb on '+(ok?'ok':'no');
+  const nx=document.getElementById('bnnx');
+  nx.className='btn-nx on';
+  nx.textContent=curQ<19?'下一題 →':'查看結果 →';
+}
+
+function nextQ(){
+  curQ++;
+  if(curQ>=20)showResult();
+  else loadQ(curQ);
+}
+
+// ── 結果 ─────────────────────────────────────────────────────────────────────
+function showResult(){
+  const corr=answers.filter(a=>a.correct).length;
+  const score=Math.round(corr/20*100);
+  document.getElementById('rname').textContent=
+    `${stu.cls} ${stu.seat}號 ${stu.name} ｜ ${stu.time}`;
+  document.getElementById('snum').textContent=score;
+  document.getElementById('st1').textContent=corr;
+  document.getElementById('st2').textContent=20-corr;
+  document.getElementById('st3').textContent=score+'%';
+  const ring=document.getElementById('sring');
+  ring.className='score-ring '+(score>=80?'rh':score>=60?'rm':'rl');
+  const msgs=score>=80?['🌟 表現優秀！','概念掌握良好，繼續保持！']:
+    score>=60?['👍 繼續加油！','部分概念需要再複習。']:
+    ['💪 需要加強！','建議老師安排補救教學。'];
+  document.getElementById('smsg').textContent=msgs[0];
+  document.getElementById('ssub').textContent=msgs[1];
+
+  // 按子類別統計
+  const subs=[...new Set(QS.map(q=>({sub:q.sub,unit:q.unit,uc:q.uc})).map(x=>JSON.stringify(x)))].map(x=>JSON.parse(x));
+  const catRpt=document.getElementById('catrpt');
+  catRpt.innerHTML='';
+  // 先分兩單元
+  ['第五單元','第六單元'].forEach(unit=>{
+    const unitSubs=subs.filter(s=>s.unit===unit);
+    const unitColor=unit==='第五單元'?'#c8401a':'#1a50b8';
+    const unitBg=unit==='第五單元'?'#fdf0eb':'#ebf2fd';
+    const unitHd=document.createElement('div');
+    unitHd.style.cssText=`font-size:13px;font-weight:900;color:${unitColor};margin:10px 0 5px;padding:4px 10px;background:${unitBg};border-radius:8px`;
+    unitHd.textContent=(unit==='第五單元'?'🧩 ':'📐 ')+unit;
+    catRpt.appendChild(unitHd);
+    unitSubs.forEach(({sub,unit:u,uc})=>{
+      const subAs=answers.filter(a=>a.sub===sub);
+      const sc=subAs.filter(a=>a.correct).length;
+      const pct=subAs.length?Math.round(sc/subAs.length*100):0;
+      const col=pct>=80?'#178a56':pct>=60?'#b87010':'#c82828';
+      const wrong=subAs.filter(a=>!a.correct);
+      const div=document.createElement('div');
+      div.className='cat-card';
+      div.innerHTML=`<div class="cat-hd">
+        <div class="cat-nm"><span>${sub}</span><div class="bar-bg"><div class="bar-fg" style="width:${pct}%;background:${col}"></div></div></div>
+        <div class="cat-sc" style="color:${col}">${sc}/${subAs.length} 題</div>
+      </div>`+(wrong.length?`<div class="wrong-list">`+
+        wrong.map(a=>`<div class="wi"><div class="wlbl">第${a.id}題</div>
+          你的答案：<span class="wa">${a.chosen}</span>　正確答案：<span class="ca">${a.right}</span></div>`).join('')
+      +'</div>':'');
+      catRpt.appendChild(div);
+    });
+  });
+
+  // 錯誤詳解
+  const wrongAll=answers.filter(a=>!a.correct);
+  const wd=document.getElementById('wrongdet');
+  if(!wrongAll.length){
+    wd.innerHTML='<div style="text-align:center;padding:18px;color:#178a56;font-weight:900;font-size:16px">🎉 全部答對！非常棒！</div>';
+  } else {
+    wd.innerHTML=wrongAll.map(a=>`<div class="di">
+      <div class="di-tags">
+        <span class="di-tag" style="background:${a.unit==='第五單元'?'#fdf0eb':'#ebf2fd'};color:${a.unit==='第五單元'?'#c8401a':'#1a50b8'}">第${a.id}題｜${a.unit}</span>
+        <span class="di-tag" style="background:#f4f6f9;color:#4e5a6a">${a.sub}</span>
+      </div>
+      <div class="di-q">${a.text}</div>
+      <div class="di-ans">
+        <span style="background:#fdeaea;color:#c82828;padding:3px 10px;border-radius:20px;font-size:13px;font-weight:700">✗ ${a.chosen}</span>
+        <span style="color:#8a96a6">→</span>
+        <span style="background:#e7f6ef;color:#178a56;padding:3px 10px;border-radius:20px;font-size:13px;font-weight:700">✓ ${a.right}</span>
+      </div>
+      <div class="di-exp">📝 ${a.exp}</div>
+    </div>`).join('');
+  }
+
+  // 儲存
+  const recs=JSON.parse(localStorage.getItem('hanlinkRecords')||'[]');
+  recs.push({...stu,score,corr,wrongSubs:wrongAll.map(a=>({sub:a.sub,unit:a.unit})),ts:Date.now()});
+  localStorage.setItem('hanlinkRecords',JSON.stringify(recs));
+  go('sr');
+}
+
+// ── 教師看板 ─────────────────────────────────────────────────────────────────
+function showTeacher(){
+  const recs=JSON.parse(localStorage.getItem('hanlinkRecords')||'[]');
+  const tl=document.getElementById('tlist');
+  if(!recs.length){tl.innerHTML='<div class="empty">📭 尚無學生作答記錄</div>';}
+  else{
+    tl.innerHTML=recs.slice().reverse().map(r=>{
+      const c=r.score>=80?'#178a56':r.score>=60?'#b87010':'#c82828';
+      const bg=r.score>=80?'#e7f6ef':r.score>=60?'#fdf3e0':'#fdeaea';
+      return `<div class="sr"><div class="av">${r.name.substring(0,2)}</div>
+        <div class="sinfo flex1"><div class="nm">${r.name}</div><div class="mt">${r.cls} ${r.seat}號 ‧ ${r.time}</div></div>
+        <div class="sbadge" style="color:${c};background:${bg}">${r.score}分</div></div>`;
+    }).join('')+`<button class="btn-clr" onclick="clearRecs()">清除所有記錄</button>`;
+  }
+
+  // 弱點統計
+  const allWrong=recs.flatMap(r=>r.wrongSubs||[]);
+  const subCnt={};
+  allWrong.forEach(({sub,unit})=>{const k=unit+'|'+sub;subCnt[k]=(subCnt[k]||{sub,unit,n:0});subCnt[k].n++;});
+  const sorted=Object.values(subCnt).sort((a,b)=>b.n-a.n);
+  const tw=document.getElementById('tweak');
+  if(!sorted.length){tw.innerHTML='<div class="empty">暫無資料</div>';}
+  else{
+    const mx=sorted[0].n;
+    tw.innerHTML=sorted.map(({sub,unit,n})=>{
+      const pct=Math.round(n/mx*100);
+      const col=pct>66?'#c82828':pct>33?'#b87010':'#178a56';
+      const uc=unit==='第五單元'?'#c8401a':'#1a50b8';
+      const ubg=unit==='第五單元'?'#fdf0eb':'#ebf2fd';
+      return `<div class="weakness-bar">
+        <div class="wb-row">
+          <span><span style="font-size:11px;background:${ubg};color:${uc};padding:2px 7px;border-radius:12px;font-weight:700;margin-right:5px">${unit}</span><b>${sub}</b></span>
+          <span style="color:${col};font-weight:700">錯誤 ${n} 次</span>
+        </div>
+        <div class="wb-bg"><div class="wb-fg" style="width:${pct}%;background:${col}"></div></div>
+      </div>`;
+    }).join('');
+  }
+
+  // 補救建議
+  const tr=document.getElementById('tremed');
+  if(!sorted.length){tr.innerHTML='<div class="empty">暫無資料</div>';}
+  else{
+    const top3=sorted.slice(0,3);
+    tr.innerHTML=`<div style="margin-bottom:12px;font-size:13.5px;line-height:1.8">
+      根據錯誤分析，建議優先針對以下概念安排補救教學：</div>`+
+    top3.map((s,i)=>`<div class="remedy-box" style="margin-bottom:8px">
+      <b>${['🥇','🥈','🥉'][i]} 優先補救：${s.sub}</b>（${s.unit}，共錯 ${s.n} 次）<br>
+      ${remedyText(s.sub)}
+    </div>`).join('');
+  }
+  go('st');
+}
+
+function remedyText(sub){
+  const map={
+    '找規律':'建議引導學生用表格列出數列，觀察相鄰項差值或比值，培養歸納能力。',
+    '逆向思考':'從結果往回推，可用「還原法」或流程圖輔助，加強理解運算的可逆性。',
+    '假設法':'先設定一種情況全部假設，計算差距，再換算成正確比例，多練習例題。',
+    '列舉畫圖法':'透過系統性列表或畫樹狀圖，確保不重複不遺漏，培養有序思考習慣。',
+    '角柱基本概念':'使用積木或展開圖實物操作，協助理解頂點、棱、面的對應規律（n角柱：V=2n, E=3n, F=n+2）。',
+    '圓柱基本概念':'以實物圓柱體（如罐頭）操作，觀察底面和側面特徵，加強空間感建立。',
+    '展開圖':'多做剪貼展開圖活動，反覆對照立體圖與平面展開圖，加強空間轉換。',
+    '體積與表面積':'複習底面積計算公式，並釐清體積（三維）與表面積（二維）的概念差異。',
+  };
+  return map[sub]||'請針對此概念安排額外練習題，搭配圖示說明。';
+}
+
+function clearRecs(){
+  if(confirm('確定清除所有學生記錄？')){localStorage.removeItem('hanlinkRecords');showTeacher();}
+}
+function resetAll(){
+  document.getElementById('iname').value='';
+  document.getElementById('icls').value='';
+  document.getElementById('iseat').value='';
+  go('sw');
+}
+
+// ── QR Code ───────────────────────────────────────────────────────────────────
+window.addEventListener('load',()=>{
+  const url=window.location.href;
+  document.getElementById('qrurl').textContent=url.length>60?url.slice(0,60)+'…':url;
+  if(typeof QRCode!=='undefined'){
+    new QRCode(document.getElementById('qrbox'),{
+      text:url,width:120,height:120,
+      colorDark:'#1a50b8',colorLight:'#ffffff',
+      correctLevel:QRCode.CorrectLevel.M
+    });
+  }
+});
+</script>
+</body>
+</html>
