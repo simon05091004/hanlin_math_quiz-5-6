@@ -243,9 +243,7 @@ label.fl{display:block;font-size:12.5px;font-weight:700;color:var(--texts);margi
     </div>
   </div>
   <div class="body">
-    <div id="fb-warn" style="display:none;background:#fff3cd;border:1.5px solid #ffc107;border-radius:var(--rs);padding:11px 14px;width:100%;max-width:520px;font-size:12.5px;color:#856404">
-      ⚠️ 目前為<b>本機模式</b>，作答記錄不會上傳雲端。<button style="margin-left:8px;background:none;border:none;color:#856404;text-decoration:underline;cursor:pointer;font-family:'Noto Sans TC',sans-serif;font-size:12px" onclick="go('scfg')">設定Firebase →</button>
-    </div>
+
     <div class="w-card">
       <h2>👋 同學，準備好了嗎？</h2>
       <p class="desc">本測驗共 <b>20 題</b>，涵蓋翰林版六下兩個單元的核心概念。<br>請誠實作答，結果只是幫助老師了解你的學習狀況。</p>
@@ -409,16 +407,16 @@ label.fl{display:block;font-size:12.5px;font-weight:700;color:var(--texts);margi
 // ══════════════════════════════════════════════════════════════
 //  ★ Firebase 設定（可在設定頁面填入，或直接在此修改）
 // ══════════════════════════════════════════════════════════════
-const DEFAULT_FB_CONFIG = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: ""
+const FB_CONFIG = {
+  apiKey: "AIzaSyC9lemHX8VEk7DiszkanLWGZjXB4TlCJKs",
+  authDomain: "math-5-6.firebaseapp.com",
+  projectId: "math-5-6",
+  storageBucket: "math-5-6.firebasestorage.app",
+  messagingSenderId: "791241827089",
+  appId: "1:791241827089:web:a23f71fe1974fa6db322b0"
 };
 
-// 教師密碼（請自行修改）
+// ★ 教師密碼（請自行修改）
 const TEACHER_PASSWORD = "teacher123";
 
 // Firestore collection 名稱
@@ -428,15 +426,10 @@ const COLLECTION = "mathQuiz_results";
 let db = null;
 let useFirebase = false;
 
-function getStoredConfig(){
-  try { return JSON.parse(localStorage.getItem('fbConfig')||'{}'); } catch(e){ return {}; }
-}
-
-function initFirebase(cfg){
-  if(!cfg || !cfg.apiKey || !cfg.projectId) return false;
+function initFirebase(){
   try {
     if(!firebase.apps.length){
-      firebase.initializeApp(cfg);
+      firebase.initializeApp(FB_CONFIG);
     }
     db = firebase.firestore();
     useFirebase = true;
@@ -447,34 +440,7 @@ function initFirebase(cfg){
   }
 }
 
-function saveFirebaseConfig(){
-  const cfg = {
-    apiKey: document.getElementById('cfg-apiKey').value.trim(),
-    authDomain: document.getElementById('cfg-authDomain').value.trim(),
-    projectId: document.getElementById('cfg-projectId').value.trim(),
-    storageBucket: document.getElementById('cfg-storageBucket').value.trim(),
-    messagingSenderId: document.getElementById('cfg-messagingSenderId').value.trim(),
-    appId: document.getElementById('cfg-appId').value.trim()
-  };
-  if(!cfg.apiKey || !cfg.projectId || !cfg.appId){
-    alert('請至少填入 apiKey、projectId 和 appId！');
-    return;
-  }
-  localStorage.setItem('fbConfig', JSON.stringify(cfg));
-  const ok = initFirebase(cfg);
-  if(ok){ alert('✅ Firebase 設定成功！'); go('sw'); updateWarnBanner(); }
-  else { alert('❌ Firebase 連線失敗，請確認設定是否正確。'); }
-}
 
-function skipConfig(){
-  localStorage.setItem('fbConfig', JSON.stringify({}));
-  go('sw');
-  updateWarnBanner();
-}
-
-function updateWarnBanner(){
-  document.getElementById('fb-warn').style.display = useFirebase ? 'none' : 'block';
-}
 
 // ── 題目資料庫 ──────────────────────────────────────────────────────────────
 const QS = [
@@ -1139,20 +1105,9 @@ function resetAll(){
 
 // ── 初始化 ────────────────────────────────────────────────────────────────────
 window.addEventListener('load',()=>{
-  // Firebase 初始化
-  const storedCfg = getStoredConfig();
-  if(storedCfg && storedCfg.apiKey){
-    initFirebase(storedCfg);
-    updateWarnBanner();
-    go('sw');
-  } else if(localStorage.getItem('fbConfig')){
-    // 明確跳過過
-    updateWarnBanner();
-    go('sw');
-  } else {
-    // 第一次使用，顯示設定頁
-    go('scfg');
-  }
+  // Firebase 初始化（設定已寫死，學生直接進測驗）
+  initFirebase();
+  go('sw');
 
   // QR Code
   const url=window.location.href;
