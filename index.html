@@ -6,6 +6,11 @@
 <title>六下數學診斷測驗｜翰林版第五、六單元</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<!-- ★★★ Firebase SDK ★★★ -->
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-app-compat.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/firebase@10.12.2/firebase-firestore-compat.min.js"></script>
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
@@ -33,6 +38,13 @@ html,body{height:100%;font-family:'Noto Sans TC',sans-serif;background:#edf1f8;c
 .bar .ttl{color:#fff;font-size:16px;font-weight:700;letter-spacing:.3px}
 .bar .sub{color:rgba(255,255,255,.72);font-size:12px;margin-top:1px}
 .bar .flex1{flex:1}
+
+/* ─── FIREBASE CONFIG BANNER ─── */
+.fb-banner{background:#fff3cd;border:2px solid #ffc107;border-radius:var(--rs);padding:16px 18px;margin:16px;max-width:520px;width:calc(100% - 32px)}
+.fb-banner h3{font-size:14px;font-weight:900;color:#856404;margin-bottom:8px}
+.fb-banner p{font-size:12.5px;color:#856404;line-height:1.75}
+.fb-banner code{background:#fff;border:1px solid #ffc107;border-radius:4px;padding:1px 5px;font-size:11.5px;font-family:monospace}
+.fb-banner .cfg-btn{margin-top:10px;padding:8px 16px;background:#ffc107;color:#333;border:none;border-radius:var(--rs);font-family:'Noto Sans TC',sans-serif;font-weight:700;font-size:13px;cursor:pointer}
 
 /* ─── WELCOME ─── */
 #sw .body{flex:1;padding:18px 16px 30px;display:flex;flex-direction:column;align-items:center;gap:16px}
@@ -143,6 +155,10 @@ label.fl{display:block;font-size:12.5px;font-weight:700;color:var(--texts);margi
 #st .body{flex:1;padding:14px;max-width:760px;margin:0 auto;width:100%}
 .tc{background:var(--white);border-radius:var(--r);padding:17px 18px;box-shadow:var(--sh);margin-bottom:12px}
 .tc h3{font-size:15px;font-weight:900;color:var(--u6);margin-bottom:13px}
+.tc-filter{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.tc-filter select,.tc-filter input{padding:7px 10px;border:1.5px solid var(--graym);border-radius:var(--rs);font-size:13px;font-family:'Noto Sans TC',sans-serif;color:var(--text);background:var(--white);outline:none}
+.tc-filter select:focus,.tc-filter input:focus{border-color:var(--u6)}
+.tc-filter button{padding:7px 14px;background:var(--u6);color:#fff;border:none;border-radius:var(--rs);font-size:13px;font-family:'Noto Sans TC',sans-serif;cursor:pointer;font-weight:700}
 .sr{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--graym)}
 .sr:last-of-type{border-bottom:none}
 .av{width:38px;height:38px;border-radius:50%;background:var(--u6l);color:var(--u6);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
@@ -157,6 +173,27 @@ label.fl{display:block;font-size:12.5px;font-weight:700;color:var(--texts);margi
 .wb-bg{height:9px;background:var(--graym);border-radius:5px;overflow:hidden}
 .wb-fg{height:9px;border-radius:5px}
 .remedy-box{margin-top:14px;padding:12px 14px;background:var(--amberl);border-radius:var(--rs);font-size:13px;color:var(--amber);line-height:1.7}
+.loading-spin{display:inline-block;width:18px;height:18px;border:2px solid var(--graym);border-top-color:var(--u6);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.fb-status{font-size:12px;padding:8px 12px;border-radius:var(--rs);margin-top:8px}
+.fb-status.ok{background:var(--greenl);color:var(--green)}
+.fb-status.err{background:var(--redl);color:var(--red)}
+
+/* ─── TEACHER LOGIN ─── */
+#slogin .body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.login-card{background:var(--white);border-radius:var(--r);padding:30px 24px;width:100%;max-width:360px;box-shadow:var(--sh);text-align:center}
+.login-card h2{font-size:19px;font-weight:900;margin-bottom:6px}
+.login-card p{font-size:13px;color:var(--texts);margin-bottom:20px}
+.login-card .inp{margin-bottom:14px}
+
+/* ─── FIREBASE CONFIG ─── */
+#scfg .body{flex:1;padding:16px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.cfg-card{background:var(--white);border-radius:var(--r);padding:22px 20px;width:100%;max-width:560px;box-shadow:var(--sh)}
+.cfg-card h2{font-size:17px;font-weight:900;margin-bottom:6px}
+.cfg-card p{font-size:13px;color:var(--texts);margin-bottom:16px;line-height:1.75}
+.cfg-card label.fl{margin-top:10px}
+.cfg-save{width:100%;padding:14px;background:linear-gradient(135deg,#1a50b8,#2a7ae0);color:#fff;border:none;border-radius:var(--rs);font-size:15px;font-weight:900;font-family:'Noto Sans TC',sans-serif;cursor:pointer;margin-top:14px}
+.cfg-skip{display:block;text-align:center;margin-top:10px;font-size:12px;color:var(--texth);cursor:pointer;background:none;border:none;font-family:'Noto Sans TC',sans-serif;text-decoration:underline}
 
 @media print{.bar .btn,.btnrow,.btn-go,.back-btn,.teacher-link,.qr-card{display:none!important}body{background:#fff}}
 @media(max-width:380px){.sub-pills{grid-template-columns:1fr}.stat3{grid-template-columns:1fr 1fr}.inp-row{grid-template-columns:1fr}}
@@ -164,8 +201,40 @@ label.fl{display:block;font-size:12.5px;font-weight:700;color:var(--texts);margi
 </head>
 <body>
 
+<!-- ══════ FIREBASE CONFIG SCREEN ══════ -->
+<div id="scfg" class="screen">
+  <div class="bar bar-both">
+    <div class="icon">🔥</div>
+    <div class="flex1">
+      <div class="ttl">Firebase 資料庫設定</div>
+      <div class="sub">初次使用請先完成設定</div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="cfg-card">
+      <h2>🔧 設定 Firebase 連線</h2>
+      <p>請至 <b>Firebase Console</b> 建立專案並取得設定資訊，填入後即可將學生作答記錄儲存到雲端資料庫，供各班教師補救教學使用。<br><br>
+      步驟：Firebase Console → 新增專案 → 新增網頁應用程式 → 複製設定 → 啟用 Firestore Database</p>
+      <label class="fl">apiKey</label>
+      <input class="inp" id="cfg-apiKey" placeholder="AIzaSy...">
+      <label class="fl">authDomain</label>
+      <input class="inp" id="cfg-authDomain" placeholder="your-project.firebaseapp.com">
+      <label class="fl">projectId</label>
+      <input class="inp" id="cfg-projectId" placeholder="your-project-id">
+      <label class="fl">storageBucket（可選）</label>
+      <input class="inp" id="cfg-storageBucket" placeholder="your-project.appspot.com">
+      <label class="fl">messagingSenderId（可選）</label>
+      <input class="inp" id="cfg-messagingSenderId" placeholder="123456789">
+      <label class="fl">appId</label>
+      <input class="inp" id="cfg-appId" placeholder="1:123456789:web:abc...">
+      <button class="cfg-save" onclick="saveFirebaseConfig()">儲存設定並啟動 →</button>
+      <button class="cfg-skip" onclick="skipConfig()">暫時略過（使用本機模式）</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══════ WELCOME ══════ -->
-<div id="sw" class="screen active">
+<div id="sw" class="screen">
   <div class="bar bar-both">
     <div class="icon">📚</div>
     <div class="flex1">
@@ -174,6 +243,9 @@ label.fl{display:block;font-size:12.5px;font-weight:700;color:var(--texts);margi
     </div>
   </div>
   <div class="body">
+    <div id="fb-warn" style="display:none;background:#fff3cd;border:1.5px solid #ffc107;border-radius:var(--rs);padding:11px 14px;width:100%;max-width:520px;font-size:12.5px;color:#856404">
+      ⚠️ 目前為<b>本機模式</b>，作答記錄不會上傳雲端。<button style="margin-left:8px;background:none;border:none;color:#856404;text-decoration:underline;cursor:pointer;font-family:'Noto Sans TC',sans-serif;font-size:12px" onclick="go('scfg')">設定Firebase →</button>
+    </div>
     <div class="w-card">
       <h2>👋 同學，準備好了嗎？</h2>
       <p class="desc">本測驗共 <b>20 題</b>，涵蓋翰林版六下兩個單元的核心概念。<br>請誠實作答，結果只是幫助老師了解你的學習狀況。</p>
@@ -191,15 +263,15 @@ label.fl{display:block;font-size:12.5px;font-weight:700;color:var(--texts);margi
         <span class="spill" style="background:#ebf2fd;color:#1a50b8">展開圖</span>
         <span class="spill" style="background:#ebf2fd;color:#1a50b8">體積與表面積</span>
       </div>
-      <label class="fl">姓名</label>
-      <input class="inp" id="iname" type="text" placeholder="請輸入你的姓名" maxlength="20">
       <div class="inp-row">
         <div>
           <label class="fl">班級</label>
           <select class="inp" id="icls" style="appearance:none">
-            <option value="">請選擇</option>
-            <option>六年甲班</option><option>六年乙班</option><option>六年丙班</option>
-            <option>六年丁班</option><option>六年戊班</option>
+            <option value="">請選擇班級</option>
+            <option>六年一班</option><option>六年二班</option><option>六年三班</option>
+            <option>六年四班</option><option>六年五班</option><option>六年六班</option>
+            <option>六年七班</option><option>六年八班</option><option>六年九班</option>
+            <option>六年十班</option>
           </select>
         </div>
         <div>
@@ -208,7 +280,7 @@ label.fl{display:block;font-size:12.5px;font-weight:700;color:var(--texts);margi
         </div>
       </div>
       <button class="btn-go" onclick="startQuiz()">開始測驗 →</button>
-      <button class="teacher-link" onclick="showTeacher()">教師成績管理 / 補救藍本</button>
+      <button class="teacher-link" onclick="go('slogin')">教師成績管理 / 補救藍本</button>
     </div>
     <div class="qr-card">
       <p>📱 讓同學掃描 QR Code 在平板上作答</p>
@@ -254,6 +326,7 @@ label.fl{display:block;font-size:12.5px;font-weight:700;color:var(--texts);margi
     </div>
   </div>
   <div class="body">
+    <div id="upload-status" style="display:none" class="fb-status ok">✅ 作答記錄已上傳雲端資料庫</div>
     <div class="hero">
       <div class="score-ring" id="sring"><div class="big" id="snum"></div><div class="sm">分</div></div>
       <h2 id="smsg"></h2>
@@ -275,7 +348,29 @@ label.fl{display:block;font-size:12.5px;font-weight:700;color:var(--texts);margi
   </div>
 </div>
 
-<!-- ══════ TEACHER ══════ -->
+<!-- ══════ TEACHER LOGIN ══════ -->
+<div id="slogin" class="screen">
+  <div class="bar bar-both">
+    <div class="icon">🔐</div>
+    <div class="flex1">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div class="ttl">教師登入</div>
+        <button class="back-btn" onclick="go('sw')">← 返回</button>
+      </div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="login-card">
+      <h2>👩‍🏫 教師專區</h2>
+      <p>請輸入教師密碼以查看全班成績及補救教學建議</p>
+      <input class="inp" id="t-pwd" type="password" placeholder="請輸入密碼" onkeydown="if(event.key==='Enter')teacherLogin()">
+      <button class="btn-go" onclick="teacherLogin()">進入教師看板</button>
+      <div id="login-err" style="display:none;margin-top:10px;font-size:13px;color:var(--red);text-align:center">❌ 密碼錯誤，請重試</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ TEACHER DASHBOARD ══════ -->
 <div id="st" class="screen">
   <div class="bar bar-both">
     <div class="icon">👩‍🏫</div>
@@ -288,6 +383,22 @@ label.fl{display:block;font-size:12.5px;font-weight:700;color:var(--texts);margi
     </div>
   </div>
   <div class="body">
+    <!-- 篩選器 -->
+    <div class="tc">
+      <h3>🔍 篩選條件</h3>
+      <div class="tc-filter">
+        <select id="t-cls-filter">
+          <option value="">所有班級</option>
+          <option>六年一班</option><option>六年二班</option><option>六年三班</option>
+          <option>六年四班</option><option>六年五班</option><option>六年六班</option>
+          <option>六年七班</option><option>六年八班</option><option>六年九班</option>
+          <option>六年十班</option>
+        </select>
+        <button onclick="loadTeacherData()">🔄 載入資料</button>
+        <span id="t-loading" style="display:none;font-size:13px;color:var(--texth)"><span class="loading-spin"></span>載入中...</span>
+      </div>
+      <div id="t-fb-note" style="font-size:12px;color:var(--texth)"></div>
+    </div>
     <div class="tc"><h3>📋 學生作答記錄</h3><div id="tlist"></div></div>
     <div class="tc"><h3>🎯 全班弱點分析</h3><div id="tweak"></div></div>
     <div class="tc"><h3>📌 補救教學建議</h3><div id="tremed"></div></div>
@@ -295,6 +406,76 @@ label.fl{display:block;font-size:12.5px;font-weight:700;color:var(--texts);margi
 </div>
 
 <script>
+// ══════════════════════════════════════════════════════════════
+//  ★ Firebase 設定（可在設定頁面填入，或直接在此修改）
+// ══════════════════════════════════════════════════════════════
+const DEFAULT_FB_CONFIG = {
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: ""
+};
+
+// 教師密碼（請自行修改）
+const TEACHER_PASSWORD = "teacher123";
+
+// Firestore collection 名稱
+const COLLECTION = "mathQuiz_results";
+
+// ── Firebase 初始化 ──────────────────────────────────────────
+let db = null;
+let useFirebase = false;
+
+function getStoredConfig(){
+  try { return JSON.parse(localStorage.getItem('fbConfig')||'{}'); } catch(e){ return {}; }
+}
+
+function initFirebase(cfg){
+  if(!cfg || !cfg.apiKey || !cfg.projectId) return false;
+  try {
+    if(!firebase.apps.length){
+      firebase.initializeApp(cfg);
+    }
+    db = firebase.firestore();
+    useFirebase = true;
+    return true;
+  } catch(e){
+    console.error('Firebase init error:', e);
+    return false;
+  }
+}
+
+function saveFirebaseConfig(){
+  const cfg = {
+    apiKey: document.getElementById('cfg-apiKey').value.trim(),
+    authDomain: document.getElementById('cfg-authDomain').value.trim(),
+    projectId: document.getElementById('cfg-projectId').value.trim(),
+    storageBucket: document.getElementById('cfg-storageBucket').value.trim(),
+    messagingSenderId: document.getElementById('cfg-messagingSenderId').value.trim(),
+    appId: document.getElementById('cfg-appId').value.trim()
+  };
+  if(!cfg.apiKey || !cfg.projectId || !cfg.appId){
+    alert('請至少填入 apiKey、projectId 和 appId！');
+    return;
+  }
+  localStorage.setItem('fbConfig', JSON.stringify(cfg));
+  const ok = initFirebase(cfg);
+  if(ok){ alert('✅ Firebase 設定成功！'); go('sw'); updateWarnBanner(); }
+  else { alert('❌ Firebase 連線失敗，請確認設定是否正確。'); }
+}
+
+function skipConfig(){
+  localStorage.setItem('fbConfig', JSON.stringify({}));
+  go('sw');
+  updateWarnBanner();
+}
+
+function updateWarnBanner(){
+  document.getElementById('fb-warn').style.display = useFirebase ? 'none' : 'block';
+}
+
 // ── 題目資料庫 ──────────────────────────────────────────────────────────────
 const QS = [
 // ═══ 第五單元：怎樣解題 ═══
@@ -305,36 +486,29 @@ const QS = [
   svg:`<svg viewBox="0 0 300 60" width="300" height="60" xmlns="http://www.w3.org/2000/svg">
     <text x="10" y="38" font-size="15" fill="#c8401a" font-weight="bold" font-family="serif">1²=1</text>
     <text x="60" y="38" font-size="15" fill="#c8401a" font-weight="bold" font-family="serif">2²=4</text>
-    <text x="112" y="38" font-size="15" fill="#c8401a" font-weight="bold" font-family="serif">3²=9</text>
-    <text x="163" y="38" font-size="15" fill="#8a3800" font-weight="bold" font-family="serif">4²=16</text>
-    <text x="220" y="38" font-size="15" fill="#8a3800" font-weight="bold" font-family="serif">...</text>
-    <text x="10" y="55" font-size="11" fill="#a06030" font-family="sans-serif">每項＝n²</text>
+    <text x="110" y="38" font-size="15" fill="#c8401a" font-weight="bold" font-family="serif">3²=9</text>
+    <text x="165" y="38" font-size="15" fill="#c8401a" font-weight="bold" font-family="serif">...</text>
+    <text x="185" y="38" font-size="15" fill="#c8401a" font-weight="bold" font-family="serif">n²=?</text>
   </svg>`,
-  hint:'規律是第 n 個數＝n²，第 10 個數就是 10²。',
-  choices:['A. 81','B. 90','C. 100','D. 121'],
-  ans:2,
-  exp:'數列是 1²、2²、3²…平方數，第10項＝10²＝<b>100</b>'
+  hint:'這是平方數數列：1², 2², 3²，…，第 n 個數＝n²。',
+  choices:['A. 90','B. 100','C. 110','D. 121'],
+  ans:1,
+  exp:'第 10 個數＝10²＝<b>100</b>'
 },
 {
   id:2, unit:'第五單元', sub:'找規律',
   uc:{bg:'#fdf0eb',c:'#c8401a'}, ui:'🧩',
-  text:'用火柴棒排正方形，如圖：第1個用<b>4</b>根，第2個用<b>7</b>根，第3個用<b>10</b>根…<br>第 <b>8</b> 個圖形需要幾根火柴？',
-  svg:`<svg viewBox="0 0 280 70" width="280" height="70" xmlns="http://www.w3.org/2000/svg">
-    <rect x="10" y="10" width="22" height="22" rx="2" fill="none" stroke="#c8401a" stroke-width="3"/>
-    <text x="13" y="48" font-size="12" fill="#c8401a" font-weight="bold">4根</text>
-    <rect x="55" y="10" width="22" height="22" rx="2" fill="none" stroke="#c8401a" stroke-width="3"/>
-    <rect x="77" y="10" width="22" height="22" rx="2" fill="none" stroke="#c8401a" stroke-width="3"/>
-    <text x="56" y="48" font-size="12" fill="#c8401a" font-weight="bold">7根</text>
-    <rect x="115" y="10" width="22" height="22" rx="2" fill="none" stroke="#c8401a" stroke-width="3"/>
-    <rect x="137" y="10" width="22" height="22" rx="2" fill="none" stroke="#c8401a" stroke-width="3"/>
-    <rect x="159" y="10" width="22" height="22" rx="2" fill="none" stroke="#c8401a" stroke-width="3"/>
-    <text x="120" y="48" font-size="12" fill="#c8401a" font-weight="bold">10根</text>
-    <text x="210" y="36" font-size="22" fill="#8a3800" font-weight="bold">…</text>
+  text:'用牙籤排正六邊形：1個需要6根，2個需要11根，3個需要16根。<br>排 <b>8個</b>正六邊形需要幾根牙籤？',
+  svg:`<svg viewBox="0 0 300 60" width="300" height="60" xmlns="http://www.w3.org/2000/svg">
+    <text x="10" y="24" font-size="13" fill="#c8401a">1個→6根</text>
+    <text x="10" y="44" font-size="13" fill="#c8401a">2個→11根（差5）</text>
+    <text x="155" y="24" font-size="13" fill="#c8401a">3個→16根（差5）</text>
+    <text x="155" y="44" font-size="13" fill="#888">規律：首項6，公差5</text>
   </svg>`,
-  hint:'公式：第 n 個圖形＝3n＋1 根，把 n＝8 代入計算。',
-  choices:['A. 22根','B. 25根','C. 28根','D. 31根'],
+  hint:'公式：第 n 個圖形＝5n＋1 根，把 n＝8 代入計算。',
+  choices:['A. 36根','B. 41根','C. 46根','D. 51根'],
   ans:1,
-  exp:'規律是 3n＋1，第8個：3×8＋1＝<b>25 根</b>'
+  exp:'規律是 5n＋1，第8個：5×8＋1＝<b>41 根</b>'
 },
 {
   id:3, unit:'第五單元', sub:'逆向思考',
@@ -437,8 +611,6 @@ const QS = [
     <text x="150" y="55" text-anchor="middle" font-size="10" fill="#888">出發點</text>
     <text x="55" y="24" font-size="11" fill="#c8401a" font-weight="bold">←60m/分(小美)</text>
     <text x="168" y="24" font-size="11" fill="#1a50b8" font-weight="bold">小明 40m/分→</text>
-    <text x="90" y="14" font-size="11" fill="#c8401a">←</text>
-    <text x="200" y="14" font-size="11" fill="#1a50b8">→</text>
   </svg>`,
   hint:'兩人速度相加（反向），再用距離除以總速度。',
   choices:['A. 4分鐘','B. 5分鐘','C. 6分鐘','D. 7分鐘'],
@@ -501,7 +673,6 @@ const QS = [
     <rect x="148" y="20" width="40" height="50" fill="#d0e4fa" stroke="#1a50b8" stroke-width="1.5"/>
     <rect x="188" y="20" width="40" height="50" fill="#d0e4fa" stroke="#1a50b8" stroke-width="1.5"/>
     <polygon points="228,20 243,5 258,20" fill="none" stroke="#1a50b8" stroke-width="2" stroke-dasharray="3"/>
-    <polygon points="40,70 70,20 100,70" fill="none" stroke="#888" stroke-width="1" stroke-dasharray="2" transform="translate(188,0)"/>
     <text x="135" y="88" font-size="11" fill="#1a50b8">三個長方形（側面）</text>
     <text x="30" y="88" font-size="11" fill="#c8401a">底面</text>
   </svg>`,
@@ -540,7 +711,6 @@ const QS = [
     <line x1="100" y1="75" x2="120" y2="45" stroke="#1a50b8" stroke-width="1.5" stroke-dasharray="4"/>
     <line x1="40" y1="35" x2="60" y2="5" stroke="#1a50b8" stroke-width="1.5" stroke-dasharray="4"/>
     <polygon points="60,45 120,45 60,5" fill="none" stroke="#1a50b8" stroke-width="1.5"/>
-    <line x1="60" y1="5" x2="120" y2="45" stroke="#1a50b8" stroke-width="1"/>
     <text x="55" y="85" font-size="11" fill="#555">底＝6</text>
     <text x="102" y="60" font-size="11" fill="#555">8</text>
     <text x="128" y="28" font-size="11" fill="#c8401a" font-weight="bold">高10</text>
@@ -572,7 +742,6 @@ const QS = [
     <ellipse cx="80" cy="72" rx="40" ry="13" fill="#c8dcf8" stroke="#1a50b8" stroke-width="2"/>
     <line x1="80" y1="22" x2="120" y2="22" stroke="#c8401a" stroke-width="2"/>
     <text x="90" y="18" font-size="11" fill="#c8401a" font-weight="bold">r＝4</text>
-    <line x1="148" y1="22" x2="148" y2="72" stroke="#1a50b8" stroke-width="1.5" marker-end="url(#ar)"/>
     <text x="152" y="50" font-size="11" fill="#1a50b8" font-weight="bold">h＝10</text>
     <text x="148" y="89" font-size="10" fill="#555">V＝π×r²×h</text>
   </svg>`,
@@ -615,15 +784,26 @@ function go(id){
   window.scrollTo(0,0);
 }
 
+// ── 教師登入 ─────────────────────────────────────────────────────────────────
+function teacherLogin(){
+  const pwd = document.getElementById('t-pwd').value;
+  const err = document.getElementById('login-err');
+  if(pwd === TEACHER_PASSWORD){
+    err.style.display='none';
+    document.getElementById('t-pwd').value='';
+    showTeacher();
+  } else {
+    err.style.display='block';
+  }
+}
+
 // ── 開始測驗 ─────────────────────────────────────────────────────────────────
 function startQuiz(){
-  const name=document.getElementById('iname').value.trim();
   const cls=document.getElementById('icls').value;
   const seat=document.getElementById('iseat').value;
-  if(!name){alert('請輸入姓名！');return;}
   if(!cls){alert('請選擇班級！');return;}
   if(!seat){alert('請輸入座號！');return;}
-  stu={name,cls,seat,time:new Date().toLocaleString('zh-TW')};
+  stu={cls,seat,time:new Date().toLocaleString('zh-TW')};
   answers=[]; curQ=0;
   loadQ(0);
   go('sq');
@@ -682,6 +862,7 @@ function pick(idx){
   const q=QS[curQ];
   const ok=idx===q.ans;
   answers.push({id:q.id,unit:q.unit,sub:q.sub,text:q.text,correct:ok,
+    chosenIdx:idx,rightIdx:q.ans,
     chosen:q.choices[idx],right:q.choices[q.ans],exp:q.exp});
   document.querySelectorAll('.ch').forEach((b,i)=>{
     if(i===q.ans)b.classList.add('correct');
@@ -706,11 +887,10 @@ function nextQ(){
 }
 
 // ── 結果 ─────────────────────────────────────────────────────────────────────
-function showResult(){
+async function showResult(){
   const corr=answers.filter(a=>a.correct).length;
   const score=Math.round(corr/20*100);
-  document.getElementById('rname').textContent=
-    `${stu.cls} ${stu.seat}號 ${stu.name} ｜ ${stu.time}`;
+  document.getElementById('rname').textContent=`${stu.cls} ${stu.seat}號 ｜ ${stu.time}`;
   document.getElementById('snum').textContent=score;
   document.getElementById('st1').textContent=corr;
   document.getElementById('st2').textContent=20-corr;
@@ -727,7 +907,6 @@ function showResult(){
   const subs=[...new Set(QS.map(q=>({sub:q.sub,unit:q.unit,uc:q.uc})).map(x=>JSON.stringify(x)))].map(x=>JSON.parse(x));
   const catRpt=document.getElementById('catrpt');
   catRpt.innerHTML='';
-  // 先分兩單元
   ['第五單元','第六單元'].forEach(unit=>{
     const unitSubs=subs.filter(s=>s.unit===unit);
     const unitColor=unit==='第五單元'?'#c8401a':'#1a50b8';
@@ -776,38 +955,133 @@ function showResult(){
     </div>`).join('');
   }
 
-  // 儲存
-  const recs=JSON.parse(localStorage.getItem('hanlinkRecords')||'[]');
-  recs.push({...stu,score,corr,wrongSubs:wrongAll.map(a=>({sub:a.sub,unit:a.unit})),ts:Date.now()});
-  localStorage.setItem('hanlinkRecords',JSON.stringify(recs));
+  // ── 上傳到 Firebase ──
+  const wrongSubs=wrongAll.map(a=>({sub:a.sub,unit:a.unit}));
+  const record = {
+    cls: stu.cls,
+    seat: parseInt(stu.seat),
+    timestamp: useFirebase ? firebase.firestore.FieldValue.serverTimestamp() : null,
+    localTime: stu.time,
+    score,
+    correct: corr,
+    totalQ: 20,
+    answers: answers.map(a=>({
+      id:a.id, sub:a.sub, unit:a.unit,
+      correct:a.correct, chosenIdx:a.chosenIdx, rightIdx:a.rightIdx
+    })),
+    wrongSubs,
+    wrongUnits: wrongAll.reduce((acc,a)=>{acc[a.unit]=(acc[a.unit]||0)+1;return acc;},{})
+  };
+
+  const statusEl = document.getElementById('upload-status');
+  if(useFirebase){
+    try {
+      await db.collection(COLLECTION).add(record);
+      statusEl.textContent='✅ 作答記錄已上傳雲端資料庫';
+      statusEl.className='fb-status ok';
+      statusEl.style.display='block';
+    } catch(e){
+      console.error('Upload error:', e);
+      statusEl.textContent='⚠️ 雲端上傳失敗，記錄已儲存於本機';
+      statusEl.className='fb-status err';
+      statusEl.style.display='block';
+      saveLocal(record);
+    }
+  } else {
+    statusEl.style.display='none';
+    saveLocal(record);
+  }
   go('sr');
 }
 
-// ── 教師看板 ─────────────────────────────────────────────────────────────────
-function showTeacher(){
+function saveLocal(record){
   const recs=JSON.parse(localStorage.getItem('hanlinkRecords')||'[]');
+  recs.push(record);
+  localStorage.setItem('hanlinkRecords',JSON.stringify(recs));
+}
+
+// ── 教師看板 ─────────────────────────────────────────────────────────────────
+async function showTeacher(){
+  go('st');
+  await loadTeacherData();
+}
+
+async function loadTeacherData(){
+  const clsFilter = document.getElementById('t-cls-filter').value;
   const tl=document.getElementById('tlist');
-  if(!recs.length){tl.innerHTML='<div class="empty">📭 尚無學生作答記錄</div>';}
-  else{
-    tl.innerHTML=recs.slice().reverse().map(r=>{
+  const tweak=document.getElementById('tweak');
+  const tremed=document.getElementById('tremed');
+  const loading=document.getElementById('t-loading');
+  const fbNote=document.getElementById('t-fb-note');
+
+  loading.style.display='inline';
+  tl.innerHTML='';
+  tweak.innerHTML='';
+  tremed.innerHTML='';
+
+  let recs = [];
+
+  if(useFirebase){
+    fbNote.textContent='📡 資料來源：Firebase 雲端資料庫';
+    try {
+      let query = db.collection(COLLECTION).orderBy('timestamp','desc').limit(200);
+      if(clsFilter) query = db.collection(COLLECTION).where('cls','==',clsFilter).orderBy('timestamp','desc').limit(200);
+      const snap = await query.get();
+      recs = snap.docs.map(d=>({id:d.id,...d.data()}));
+    } catch(e){
+      console.error('Firestore error:', e);
+      fbNote.textContent='⚠️ 雲端讀取失敗，顯示本機資料';
+      recs = getLocalRecs(clsFilter);
+    }
+  } else {
+    fbNote.textContent='💾 資料來源：本機儲存（未連線Firebase）';
+    recs = getLocalRecs(clsFilter);
+  }
+
+  loading.style.display='none';
+  renderTeacher(recs, clsFilter);
+}
+
+function getLocalRecs(clsFilter){
+  const all=JSON.parse(localStorage.getItem('hanlinkRecords')||'[]');
+  return clsFilter ? all.filter(r=>r.cls===clsFilter) : all;
+}
+
+function renderTeacher(recs, clsFilter){
+  const tl=document.getElementById('tlist');
+
+  if(!recs.length){
+    tl.innerHTML='<div class="empty">📭 尚無學生作答記錄'+(clsFilter?'（'+clsFilter+'）':'')+'</div>';
+  } else {
+    tl.innerHTML=recs.map(r=>{
       const c=r.score>=80?'#178a56':r.score>=60?'#b87010':'#c82828';
       const bg=r.score>=80?'#e7f6ef':r.score>=60?'#fdf3e0':'#fdeaea';
-      return `<div class="sr"><div class="av">${r.name.substring(0,2)}</div>
-        <div class="sinfo flex1"><div class="nm">${r.name}</div><div class="mt">${r.cls} ${r.seat}號 ‧ ${r.time}</div></div>
-        <div class="sbadge" style="color:${c};background:${bg}">${r.score}分</div></div>`;
-    }).join('')+`<button class="btn-clr" onclick="clearRecs()">清除所有記錄</button>`;
+      const time = r.localTime || (r.timestamp?.toDate ? r.timestamp.toDate().toLocaleString('zh-TW') : '');
+      return `<div class="sr">
+        <div class="av">${r.cls ? r.cls.replace('六年','').replace('班','') : ''}</div>
+        <div class="sinfo flex1">
+          <div class="nm">${r.cls} ${r.seat}號</div>
+          <div class="mt">${time}</div>
+        </div>
+        <div class="sbadge" style="color:${c};background:${bg}">${r.score}分</div>
+      </div>`;
+    }).join('');
+    if(!useFirebase){
+      tl.innerHTML+=`<button class="btn-clr" onclick="clearRecs()">清除本機記錄</button>`;
+    }
   }
 
   // 弱點統計
   const allWrong=recs.flatMap(r=>r.wrongSubs||[]);
   const subCnt={};
-  allWrong.forEach(({sub,unit})=>{const k=unit+'|'+sub;subCnt[k]=(subCnt[k]||{sub,unit,n:0});subCnt[k].n++;});
+  allWrong.forEach(({sub,unit})=>{const k=unit+'|'+sub;if(!subCnt[k])subCnt[k]={sub,unit,n:0};subCnt[k].n++;});
   const sorted=Object.values(subCnt).sort((a,b)=>b.n-a.n);
   const tw=document.getElementById('tweak');
   if(!sorted.length){tw.innerHTML='<div class="empty">暫無資料</div>';}
   else{
     const mx=sorted[0].n;
-    tw.innerHTML=sorted.map(({sub,unit,n})=>{
+    tw.innerHTML=`<div style="font-size:12px;color:var(--texth);margin-bottom:10px">共 ${recs.length} 筆記錄${clsFilter?' ('+clsFilter+')':''}</div>`+
+    sorted.map(({sub,unit,n})=>{
       const pct=Math.round(n/mx*100);
       const col=pct>66?'#c82828':pct>33?'#b87010':'#178a56';
       const uc=unit==='第五單元'?'#c8401a':'#1a50b8';
@@ -834,7 +1108,6 @@ function showTeacher(){
       ${remedyText(s.sub)}
     </div>`).join('');
   }
-  go('st');
 }
 
 function remedyText(sub){
@@ -852,17 +1125,36 @@ function remedyText(sub){
 }
 
 function clearRecs(){
-  if(confirm('確定清除所有學生記錄？')){localStorage.removeItem('hanlinkRecords');showTeacher();}
+  if(confirm('確定清除所有本機學生記錄？')){
+    localStorage.removeItem('hanlinkRecords');
+    loadTeacherData();
+  }
 }
+
 function resetAll(){
-  document.getElementById('iname').value='';
   document.getElementById('icls').value='';
   document.getElementById('iseat').value='';
   go('sw');
 }
 
-// ── QR Code ───────────────────────────────────────────────────────────────────
+// ── 初始化 ────────────────────────────────────────────────────────────────────
 window.addEventListener('load',()=>{
+  // Firebase 初始化
+  const storedCfg = getStoredConfig();
+  if(storedCfg && storedCfg.apiKey){
+    initFirebase(storedCfg);
+    updateWarnBanner();
+    go('sw');
+  } else if(localStorage.getItem('fbConfig')){
+    // 明確跳過過
+    updateWarnBanner();
+    go('sw');
+  } else {
+    // 第一次使用，顯示設定頁
+    go('scfg');
+  }
+
+  // QR Code
   const url=window.location.href;
   document.getElementById('qrurl').textContent=url.length>60?url.slice(0,60)+'…':url;
   if(typeof QRCode!=='undefined'){
